@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login • Study Sessions Planner</title>
+
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <script th:src="@{/js/theme-toggle.js}"></script>
+</head>
+<body>
+
+<div class="navbar">
+    <div class="nav-left">
+        <a th:href="@{/}" class="nav-logo">Study Sessions</a>
+    </div>
+
+    <div class="nav-links">
+        <!-- Dark mode toggle -->
+        <button type="button" id="themeToggle" class="theme-toggle-btn">🌙</button>
+    </div>
+</div>
+
+<main class="login-wrapper">
+    <div class="login-card">
+        <h1 class="login-title">Sign In</h1>
+        <p class="login-subtitle">Welcome back! Please enter your login details.</p>
+
+        <!-- success after registration -->
+        <div th:if="${param.registered}" class="login-success">
+            Account created successfully. You can now log in.
+        </div>
+
+        <!-- error from Spring Security -->
+        <div th:if="${param.error}" class="login-error">
+            Invalid email or password.
+        </div>
+
+        <!-- logout message -->
+        <div th:if="${param.logout}" class="login-logout">
+            You have been logged out.
+        </div>
+
+        <form th:action="@{/login}" method="post" class="login-form">
+
+            <div class="form-group">
+                <label for="username">Email</label>
+                <!-- name="username" must stay like this for Spring Security -->
+                <input type="email" id="username" name="username" required />
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required />
+            </div>
+
+            <button type="submit" class="btn btn-primary login-btn">Login</button>
+        </form>
+
+        <p class="login-switch">
+            Don’t have an account?
+            <a th:href="@{/register}">Sign up</a>
+        </p>
+    </div>
+</main>
+
+</body>
+</html>

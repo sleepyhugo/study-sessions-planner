@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${title}">Study Sessions Report</title>
+
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <script th:src="@{/js/theme-toggle.js}"></script>
+</head>
+<body>
+
+<div class="navbar">
+    <div class="nav-left">
+        <a th:href="@{/}" class="nav-logo">Study Sessions</a>
+    </div>
+
+    <div class="nav-links">
+        <a th:href="@{/dashboard}">Dashboard</a>
+        <a th:href="@{/sessions}">Study Sessions</a>
+        <a th:href="@{/reports/sessions}">Reports</a>
+        <a th:href="@{/sessions/pomodoro}">Pomodoro</a>
+        <a th:href="@{/reviews/upcoming}">Reviews</a>
+
+        <!-- Dark mode toggle -->
+        <button type="button" id="themeToggle" class="theme-toggle-btn">🌙</button>
+
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="logout-btn">Logout</button>
+        </form>
+    </div>
+</div>
+
+<main class="page-wrapper">
+    <!-- Header -->
+    <section class="section-header">
+        <p class="section-kicker">Reports</p>
+        <h1 th:text="${title}">Study Sessions Report</h1>
+        <p class="section-subtitle">
+            Generated at:
+            <span th:text="${#temporals.format(generatedAt, 'MM/dd/yyyy h:mm a')}">Date</span>
+        </p>
+    </section>
+
+    <!-- Summary card -->
+    <section class="card report-summary">
+        <p class="card-title">Total Study Time</p>
+        <p class="card-value">
+            <span th:text="${totalMinutes}">0</span> minutes
+        </p>
+        <p class="card-subtext">
+            Combined duration of all sessions included in this report.
+        </p>
+
+        <div class="report-actions">
+            <a th:href="@{/}" class="btn btn-secondary">Back to Home</a>
+            <a th:href="@{/sessions}" class="btn btn-secondary">Back to Sessions</a>
+        </div>
+    </section>
+
+    <!-- Table card -->
+    <section class="card">
+        <h2 class="card-title">Session Details</h2>
+        <p class="card-subtext">
+            Each row represents a logged study session with its start time, end time, and duration.
+        </p>
+
+        <div class="report-table-wrapper">
+            <table class="table-report">
+                <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Topic</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Duration (min)</th>
+                    <th>Created At</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="s : ${sessions}">
+                    <td th:text="${s.title}">Title</td>
+                    <td th:text="${s.topicName}">Topic</td>
+
+                    <!-- Start Time -->
+                    <td th:text="${#temporals.format(s.startTime, 'MM/dd/yyyy h:mm a')}">Start</td>
+
+                    <!-- End Time -->
+                    <td th:text="${#temporals.format(s.endTime, 'MM/dd/yyyy h:mm a')}">End</td>
+
+                    <!-- Duration -->
+                    <td th:text="${s.durationMinutes}">0</td>
+
+                    <!-- Created At -->
+                    <td th:text="${#temporals.format(s.createdAt, 'MM/dd/yyyy h:mm a')}">Created</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+
+</body>
+</html>

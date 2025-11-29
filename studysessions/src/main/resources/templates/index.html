@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${appName}">Study Sessions Planner</title>
+
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <script th:src="@{/js/theme-toggle.js}"></script>
+</head>
+<body>
+
+<div class="navbar">
+    <div class="nav-left">
+        <a th:href="@{/}" class="nav-logo">Study Sessions</a>
+    </div>
+
+    <div class="nav-links">
+        <a th:href="@{/dashboard}">Dashboard</a>
+        <a th:href="@{/sessions}">Study Sessions</a>
+        <a th:href="@{/reports/sessions}">Reports</a>
+        <a th:href="@{/sessions/pomodoro}">Pomodoro</a>
+        <a th:href="@{/reviews/upcoming}">Reviews</a>
+
+        <!-- Dark mode toggle -->
+        <button type="button" id="themeToggle" class="theme-toggle-btn">🌙</button>
+
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="logout-btn">Logout</button>
+        </form>
+    </div>
+</div>
+
+
+
+<main class="welcome-wrapper">
+    <section class="hero">
+        <p class="hero-tagline">Welcome back</p>
+        <h1 th:text="${appName}">Study Sessions Planner</h1>
+
+        <p class="hero-text">
+            Stay on top of your learning with tracked study sessions, spaced-review reminders,
+            and a clear view of your progress.
+        </p>
+
+        <div class="hero-actions">
+            <a th:href="@{/dashboard}" class="btn btn-primary">Go to Dashboard</a>
+            <a th:href="@{/sessions}" class="btn btn-secondary">Log a Study Session</a>
+            <a th:href="@{/sessions/pomodoro}" class="btn btn-accent">Pomodoro Timer</a>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="feature-card">
+            <h2>Track Sessions</h2>
+            <p>Log what you studied, for how long, and keep a history of your work.</p>
+        </div>
+        <div class="feature-card">
+            <h2>Spaced Reviews</h2>
+            <p>Use review reminders to come back to topics before you forget them.</p>
+        </div>
+        <div class="feature-card">
+            <h2>Stay Consistent</h2>
+            <p>Use your dashboard, streaks, and reports to stay motivated over time.</p>
+        </div>
+    </section>
+</main>
+
+</body>
+</html>

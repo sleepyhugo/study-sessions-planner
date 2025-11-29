@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard • Study Sessions Planner</title>
+
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script th:src="@{/js/theme-toggle.js}"></script>
+</head>
+<body>
+
+<div class="navbar">
+    <div class="nav-left">
+        <a th:href="@{/}" class="nav-logo">Study Sessions</a>
+    </div>
+
+    <div class="nav-links">
+        <a th:href="@{/dashboard}">Dashboard</a>
+        <a th:href="@{/sessions}">Study Sessions</a>
+        <a th:href="@{/reports/sessions}">Reports</a>
+        <a th:href="@{/sessions/pomodoro}">Pomodoro</a>
+        <a th:href="@{/reviews/upcoming}">Reviews</a>
+
+        <!-- Dark mode toggle -->
+        <button type="button" id="themeToggle" class="theme-toggle-btn">🌙</button>
+
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="logout-btn">Logout</button>
+        </form>
+    </div>
+</div>
+
+
+<main class="page-wrapper">
+    <!-- Header / hero-style section -->
+    <section class="section-header">
+        <p class="section-kicker">Your overview</p>
+        <h1>Dashboard</h1>
+        <p class="section-subtitle">
+            Quick snapshot of your total study time, streak, and upcoming review load.
+        </p>
+    </section>
+
+    <!-- Summary cards -->
+    <section class="dashboard-cards">
+        <div class="card">
+            <h2 class="card-title">Total Study Time</h2>
+            <p class="card-value" th:text="${totalStudyMinutes} + ' minutes'">0 minutes</p>
+            <p class="card-subtext">All time logged across your sessions.</p>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">Current Streak</h2>
+            <p class="card-value" th:text="${currentStreakDays} + ' days'">0 days</p>
+            <p class="card-subtext">Consecutive days you’ve studied.</p>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">Upcoming Reviews</h2>
+            <p class="card-value"
+               th:text="${upcomingReviewsCount} + ' in the next week'">0 in the next week</p>
+            <p class="card-subtext">
+                <a th:href="@{/reviews/upcoming}">View all review reminders &raquo;</a>
+            </p>
+        </div>
+    </section>
+
+    <!-- Chart section -->
+    <section class="dashboard-section">
+        <div class="card card-chart">
+            <h2 class="card-title">Study Analytics</h2>
+            <p class="card-subtext">
+                Visual summary of your total study time (minutes).
+            </p>
+            <canvas id="studyTimeChart"></canvas>
+        </div>
+    </section>
+</main>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const totalMinutes = /*[[${totalStudyMinutes}]]*/ 0;
+
+    const ctx = document.getElementById('studyTimeChart');
+    if (ctx) {
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Total Study Time'],
+                datasets: [{
+                    label: 'Minutes studied',
+                    data: [totalMinutes]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                return context.parsed.y + ' minutes';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 30 },
+                        title: {
+                            display: true,
+                            text: 'Minutes'
+                        }
+                    }
+                }
+            }
+        });
+    }
+    /*]]>*/
+</script>
+
+</body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Pomodoro Timer • Study Sessions Planner</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <script th:src="@{/js/theme-toggle.js}"></script>
+</head>
+<body>
+
+<div class="navbar">
+    <div class="nav-left">
+        <a th:href="@{/}" class="nav-logo">Study Sessions</a>
+    </div>
+
+    <div class="nav-links">
+        <a th:href="@{/dashboard}">Dashboard</a>
+        <a th:href="@{/sessions}">Study Sessions</a>
+        <a th:href="@{/reports/sessions}">Reports</a>
+        <a th:href="@{/sessions/pomodoro}">Pomodoro</a>
+        <a th:href="@{/reviews/upcoming}">Reviews</a>
+
+        <!-- Dark mode toggle -->
+        <button type="button" id="themeToggle" class="theme-toggle-btn">🌙</button>
+
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="logout-btn">Logout</button>
+        </form>
+    </div>
+</div>
+
+
+<main class="page-wrapper">
+
+    <!-- Header -->
+    <section class="section-header">
+        <p class="section-kicker">Stay focused</p>
+        <h1>Pomodoro Timer</h1>
+        <p class="section-subtitle">
+            Stay productive with 25-minute deep-focus sessions.
+        </p>
+    </section>
+
+    <!-- Timer Card -->
+    <section class="pomodoro-card card">
+        <div class="timer-display" id="timerDisplay">25:00</div>
+
+        <div class="pomodoro-buttons">
+            <button type="button" id="startBtn" class="btn btn-primary">Start</button>
+            <button type="button" id="pauseBtn" class="btn btn-secondary" disabled>Pause</button>
+            <button type="button" id="resumeBtn" class="btn btn-secondary" disabled>Resume</button>
+            <button type="button" id="resetBtn" class="btn btn-outline-secondary">Reset</button>
+        </div>
+    </section>
+
+    <!-- Save Session Card -->
+    <section class="pomodoro-save card">
+        <h2 class="card-title">Log Your Study Session</h2>
+        <p class="card-subtext">Save what you worked on during this Pomodoro.</p>
+
+        <form th:action="@{/sessions/pomodoro}"
+              th:object="${studySession}"
+              method="post"
+              id="pomodoroForm">
+
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+            <input type="hidden" th:field="*{durationMinutesField}" id="durationMinutes"/>
+
+            <div class="form-group">
+                <label for="topicName">Topic</label>
+                <input type="text"
+                       th:field="*{topicName}"
+                       id="topicName"
+                       placeholder="e.g. Data Structures, AWS, Java practice"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <label for="notes">Notes</label>
+                <textarea th:field="*{notes}" id="notes"
+                          placeholder="What did you focus on?"
+                          required></textarea>
+            </div>
+
+            <button type="button" id="completeBtn" class="btn btn-success" disabled>
+                Complete Session &amp; Save
+            </button>
+        </form>
+    </section>
+
+</main>
+
+<!-- JS Pomodoro Logic -->
+<script>
+    const POMODORO_SECONDS = 25 * 60;
+
+    let timeLeft = POMODORO_SECONDS;
+    let timerInterval = null;
+    let isRunning = false;
+    let totalSecondsStudied = 0;
+
+    const timerDisplay = document.getElementById('timerDisplay');
+    const startBtn = document.getElementById('startBtn');
+    const pauseBtn = document.getElementById('pauseBtn');
+    const resumeBtn = document.getElementById('resumeBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const completeBtn = document.getElementById('completeBtn');
+    const durationInput = document.getElementById('durationMinutes');
+    const form = document.getElementById('pomodoroForm');
+
+    const topicInput = document.getElementById('topicName');
+    const notesInput = document.getElementById('notes');
+
+    function formatTime(seconds) {
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        return String(m).padStart(2, '0') + ":" + String(s).padStart(2, '0');
+    }
+
+    function updateDisplay() {
+        timerDisplay.textContent = formatTime(timeLeft);
+    }
+
+    function startTimer() {
+        if (isRunning) return;
+        isRunning = true;
+
+        startBtn.disabled = true;
+        pauseBtn.disabled = false;
+        resumeBtn.disabled = true;
+        completeBtn.disabled = false;
+
+        timerInterval = setInterval(() => {
+            if (timeLeft > 0) {
+                timeLeft--;
+                totalSecondsStudied++;
+                updateDisplay();
+            } else {
+                clearInterval(timerInterval);
+                isRunning = false;
+                pauseBtn.disabled = true;
+                resumeBtn.disabled = true;
+                alert("Pomodoro complete! Take a short break.");
+            }
+        }, 1000);
+    }
+
+    function pauseTimer() {
+        if (!isRunning) return;
+        clearInterval(timerInterval);
+        isRunning = false;
+
+        pauseBtn.disabled = true;
+        resumeBtn.disabled = false;
+    }
+
+    function resumeTimer() {
+        if (isRunning) return;
+        isRunning = true;
+
+        pauseBtn.disabled = false;
+        resumeBtn.disabled = true;
+
+        timerInterval = setInterval(() => {
+            if (timeLeft > 0) {
+                timeLeft--;
+                totalSecondsStudied++;
+                updateDisplay();
+            } else {
+                clearInterval(timerInterval);
+                isRunning = false;
+                pauseBtn.disabled = true;
+                resumeBtn.disabled = true;
+                alert("Pomodoro complete! Take a short break.");
+            }
+        }, 1000);
+    }
+
+    function resetTimer() {
+        clearInterval(timerInterval);
+        isRunning = false;
+        timeLeft = POMODORO_SECONDS;
+        totalSecondsStudied = 0;
+        updateDisplay();
+
+        startBtn.disabled = false;
+        pauseBtn.disabled = true;
+        resumeBtn.disabled = true;
+        completeBtn.disabled = true;
+    }
+
+    function completeSessionAndSubmit() {
+        if (totalSecondsStudied <= 0) {
+            alert("Start the timer before completing the session.");
+            return;
+        }
+
+        if (!topicInput.value.trim() || !notesInput.value.trim()) {
+            alert("Please fill in both Topic and Notes before saving.");
+            return;
+        }
+
+        clearInterval(timerInterval);
+        isRunning = false;
+
+        let minutes = Math.ceil(totalSecondsStudied / 60);
+        if (minutes <= 0) minutes = 1;
+
+        durationInput.value = minutes;
+        form.submit();
+    }
+
+    updateDisplay();
+
+    startBtn.addEventListener('click', startTimer);
+    pauseBtn.addEventListener('click', pauseTimer);
+    resumeBtn.addEventListener('click', resumeTimer);
+    resetBtn.addEventListener('click', resetTimer);
+    completeBtn.addEventListener('click', completeSessionAndSubmit);
+</script>
+
+</body>
+</html>

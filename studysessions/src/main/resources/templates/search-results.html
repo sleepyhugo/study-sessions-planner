@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Results • Study Sessions</title>
+
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <script th:src="@{/js/theme-toggle.js}"></script>
+</head>
+<body>
+
+<div class="navbar">
+    <div class="nav-left">
+        <a th:href="@{/}" class="nav-logo">Study Sessions</a>
+    </div>
+
+    <div class="nav-links">
+        <a th:href="@{/dashboard}">Dashboard</a>
+        <a th:href="@{/sessions}">Study Sessions</a>
+        <a th:href="@{/reports/sessions}">Reports</a>
+        <a th:href="@{/sessions/pomodoro}">Pomodoro</a>
+        <a th:href="@{/reviews/upcoming}">Reviews</a>
+
+        <!-- Dark mode toggle -->
+        <button type="button" id="themeToggle" class="theme-toggle-btn">🌙</button>
+
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="logout-btn">Logout</button>
+        </form>
+    </div>
+</div>
+
+
+<main class="page-wrapper">
+
+    <!-- Header -->
+    <section class="section-header">
+        <p class="section-kicker">Search</p>
+        <h1>Results for "<span th:text="${keyword}">keyword</span>"</h1>
+        <p class="section-subtitle">Search your past study sessions.</p>
+    </section>
+
+    <!-- Search Form Card -->
+    <section class="card search-card">
+        <form th:action="@{/sessions/search}" method="get" class="search-bar">
+            <input type="text" name="q" th:value="${keyword}" placeholder="Search sessions...">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+    </section>
+
+    <!-- Results Card -->
+    <section class="card">
+        <h2 class="card-title">Matching Sessions</h2>
+
+        <div class="card-subtext" th:if="${#lists.isEmpty(results)}">
+            No results found.
+        </div>
+
+        <div class="search-results-table-wrapper" th:if="${!#lists.isEmpty(results)}">
+            <table class="table-report">
+                <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Topic</th>
+                    <th>Created</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="s : ${results}">
+                    <td th:text="${s.title}">Title</td>
+                    <td th:text="${s.topicName}">Topic</td>
+                    <td th:text="${#temporals.format(s.createdAt, 'MM/dd/yyyy h:mm a')}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</main>
+
+</body>
+</html>

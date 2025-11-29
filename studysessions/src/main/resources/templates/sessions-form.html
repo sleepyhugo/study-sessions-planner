@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${formTitle}">Study Session Form</title>
+
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <script th:src="@{/js/theme-toggle.js}"></script>
+</head>
+<body>
+
+<div class="navbar">
+    <div class="nav-left">
+        <a th:href="@{/}" class="nav-logo">Study Sessions</a>
+    </div>
+
+    <div class="nav-links">
+        <a th:href="@{/dashboard}">Dashboard</a>
+        <a th:href="@{/sessions}">Study Sessions</a>
+        <a th:href="@{/reports/sessions}">Reports</a>
+        <a th:href="@{/sessions/pomodoro}">Pomodoro</a>
+        <a th:href="@{/reviews/upcoming}">Reviews</a>
+
+        <!-- Dark mode toggle -->
+        <button type="button" id="themeToggle" class="theme-toggle-btn">🌙</button>
+
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="logout-btn">Logout</button>
+        </form>
+    </div>
+</div>
+
+<main class="page-wrapper">
+    <!-- Header -->
+    <section class="section-header">
+        <p class="section-kicker">Study Sessions</p>
+        <h1 th:text="${formTitle}">Study Session</h1>
+        <p class="section-subtitle">
+            Create or edit a study session entry.
+        </p>
+    </section>
+
+    <!-- Form card -->
+    <section class="card form-card">
+        <p style="margin-top: 0; margin-bottom: 14px;">
+            <a th:href="@{/sessions}" class="btn btn-secondary">Back to Sessions</a>
+        </p>
+
+        <form th:action="@{/sessions/save}" th:object="${session}" method="post" class="session-form">
+
+            <!-- Hidden id for edits -->
+            <input type="hidden" th:field="*{id}" />
+
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input id="title" type="text" th:field="*{title}" required />
+            </div>
+
+            <div class="form-group">
+                <label for="topicName">Topic Name</label>
+                <input id="topicName" type="text" th:field="*{topicName}" required />
+            </div>
+
+            <div class="form-group">
+                <label for="notes">Notes</label>
+                <textarea id="notes" rows="4" th:field="*{notes}"></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+
+    </section>
+</main>
+
+</body>
+</html>

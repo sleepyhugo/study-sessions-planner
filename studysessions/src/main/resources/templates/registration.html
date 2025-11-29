@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign Up • Study Sessions Planner</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <script th:src="@{/js/theme-toggle.js}"></script>
+</head>
+<body>
+
+<div class="navbar">
+    <div class="nav-left">
+        <a th:href="@{/}" class="nav-logo">Study Sessions</a>
+    </div>
+
+    <div class="nav-links">
+        <!-- Dark mode toggle -->
+        <button type="button" id="themeToggle" class="theme-toggle-btn">🌙</button>
+    </div>
+</div>
+
+<main class="login-wrapper">
+    <div class="login-card">
+        <h1 class="login-title">Create an Account</h1>
+        <p class="login-subtitle">Sign up to start tracking your study sessions and reviews.</p>
+
+        <div th:if="${errorMessage}" class="login-error" th:text="${errorMessage}"></div>
+
+        <form th:action="@{/register}"
+              th:object="${registrationForm}"
+              method="post"
+              class="login-form">
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input th:field="*{email}" id="email" type="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input th:field="*{password}" id="password" type="password" required>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input th:field="*{confirmPassword}" id="confirmPassword" type="password" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary login-btn">Sign Up</button>
+        </form>
+
+        <p class="login-switch">
+            Already have an account?
+            <a th:href="@{/login}">Log in</a>
+        </p>
+    </div>
+</main>
+
+</body>
+</html>

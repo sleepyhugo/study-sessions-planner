@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Upcoming Reviews • Study Sessions Planner</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <script th:src="@{/js/theme-toggle.js}"></script>
+</head>
+<body>
+
+<div class="navbar">
+    <div class="nav-left">
+        <a th:href="@{/}" class="nav-logo">Study Sessions</a>
+    </div>
+
+    <div class="nav-links">
+        <a th:href="@{/dashboard}">Dashboard</a>
+        <a th:href="@{/sessions}">Study Sessions</a>
+        <a th:href="@{/reports/sessions}">Reports</a>
+        <a th:href="@{/sessions/pomodoro}">Pomodoro</a>
+        <a th:href="@{/reviews/upcoming}">Reviews</a>
+
+        <!-- Dark mode toggle -->
+        <button type="button" id="themeToggle" class="theme-toggle-btn">🌙</button>
+
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="logout-btn">Logout</button>
+        </form>
+    </div>
+</div>
+
+
+<main class="page-wrapper">
+
+    <!-- Header -->
+    <section class="section-header">
+        <p class="section-kicker">Review Reminders</p>
+        <h1>Upcoming Reviews</h1>
+        <p class="section-subtitle">Stay ahead by reviewing topics before they fade.</p>
+    </section>
+
+    <!-- No reminders -->
+    <section class="card" th:if="${#lists.isEmpty(reminders)}">
+        <p class="card-title">No Upcoming Reviews</p>
+        <p class="card-subtext">Great job staying caught up on your spaced-repetition schedule!</p>
+    </section>
+
+    <!-- Table of reminders -->
+    <section class="card" th:if="${!#lists.isEmpty(reminders)}">
+        <h2 class="card-title">Your Next Review Sessions</h2>
+        <p class="card-subtext">Based on spaced-repetition timing.</p>
+
+        <div class="table-wrapper">
+            <table class="table-report">
+                <thead>
+                <tr>
+                    <th>Review Date</th>
+                    <th>Topic</th>
+                    <th>Title</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="r : ${reminders}">
+                    <td th:text="${r.reviewDate}">2025-01-01</td>
+                    <td th:text="${r.topicName}">Topic Name</td>
+                    <td th:text="${r.title}">Reminder Title</td>
+                    <td>
+                        <form th:action="@{|/reviews/${r.id}/complete|}" method="post" class="inline-form">
+                            <button type="submit" class="btn btn-small btn-success">
+                                Mark Done
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </section>
+
+</main>
+
+</body>
+</html>
