@@ -62,6 +62,11 @@
             </div>
 
             <div class="form-group">
+                <label for="duration">Duration (min)</label>
+                <input id="duration" type="number" min="1" th:field="*{durationMinutesField}" required />
+            </div>
+
+            <div class="form-group">
                 <label for="notes">Notes</label>
                 <textarea id="notes" rows="4" th:field="*{notes}"></textarea>
             </div>

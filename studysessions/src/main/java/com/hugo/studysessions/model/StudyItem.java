@@ -6,7 +6,6 @@ import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
 
-//b1
 @MappedSuperclass
 public abstract class StudyItem {
 

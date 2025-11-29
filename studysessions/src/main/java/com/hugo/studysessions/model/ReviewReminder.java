@@ -5,7 +5,6 @@ import jakarta.persistence.Table;
 
 import java.time.LocalDate;
 
-//b1
 @Entity
 @Table(name = "review_reminders")
 public class ReviewReminder extends StudyItem {

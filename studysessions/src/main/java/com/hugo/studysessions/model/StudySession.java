@@ -7,7 +7,6 @@ import jakarta.validation.constraints.Size;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-//b1
 @Entity
 @Table(name = "study_sessions")
 public class StudySession extends StudyItem {
