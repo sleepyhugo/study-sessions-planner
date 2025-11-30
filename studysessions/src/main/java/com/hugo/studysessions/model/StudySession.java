@@ -59,6 +59,10 @@ public class StudySession extends StudyItem {
     }
 
     public long getDurationMinutes() {
+        if (durationMinutesField != null && durationMinutesField > 0) {
+            return durationMinutesField;
+        }
+
         if (startTime == null || endTime == null) return 0;
         return Duration.between(startTime, endTime).toMinutes();
     }
